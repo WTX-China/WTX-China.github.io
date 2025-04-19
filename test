@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>论坛与游戏中心</title>
+    <style>
+        /* 通用样式 */
+        * {
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        button {
+            cursor: pointer;
+        }
+        
+        /* 论坛样式 */
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 0;
+            margin-bottom: 30px;
+        }
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .auth-buttons button {
+            margin-left: 10px;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+        }
+        .login-btn {
+            background-color: #3498db;
+            color: white;
+        }
+        .register-btn {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .main {
+            display: flex;
+            gap: 20px;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .content {
+            flex: 1;
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .post-form {
+            margin-bottom: 30px;
+        }
+        .post-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 100px;
+            margin-bottom: 10px;
+        }
+        .post-form button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+        }
+        .post {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+        .post:last-child {
+            border-bottom: none;
+        }
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .post-author {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .post-date {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .post-content {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .post-actions {
+            display: flex;
+            align-items: center;
+        }
+        .like-btn {
+            background-color: transparent;
+            border: none;
+            display: flex;
+            align-items: center;
+            color: #7f8c8d;
+        }
+        .like-btn.liked {
+            color: #e74c3c;
+        }
+        .like-count {
+            margin-left: 5px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #3498db;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-right: 15px;
+        }
+        .username {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .game-btn {
+            background-color: #9b59b6;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 400px;
+            max-width: 90%;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .modal-footer button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+        }
+        .cancel-btn {
+            background-color: #95a5a6;
+            color: white;
+        }
+        .submit-btn {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        /* 游戏样式 */
+        #gameContainer {
+            display: none;
+            position: relative;
+        }
+        #gameCanvas {
+            border: 2px solid #333;
+            background-color: #111;
+            display: block;
+            margin: 0 auto;
+        }
+        #gameUI {
+            position: absolute;
+            color: white;
+            padding: 10px;
+            font-size: 18px;
+        }
+        #gameScore {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        #gameLives {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        #gameStartScreen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        #gameStartButton {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #gameOverScreen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+        #gameRestartButton {
+            background-color: #f44336;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #backToForumBtn {
+            background-color: #3498db;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 论坛界面 -->
+    <div id="forumContainer">
+        <header>
+            <div class="container">
+                <div class="logo">论坛与游戏中心</div>
+                <div class="auth-buttons">
+                    <button class="login-btn" id="loginBtn">登录</button>
+                    <button class="register-btn" id="registerBtn">注册</button>
+                    <button class="logout-btn" id="logoutBtn" style="display: none;">退出</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="main">
+                <div class="sidebar">
+                    <div class="user-info" id="userInfo" style="display: none;">
+                        <div class="avatar" id="userAvatar">U</div>
+                        <div class="username" id="usernameDisplay">用户名</div>
+                    </div>
+                    <h3>热门话题</h3>
+                    <ul>
+                        <li><a href="#">技术讨论</a></li>
+                        <li><a href="#">生活分享</a></li>
+                        <li><a href="#">游戏交流</a></li>
+                    </ul>
+                    <button class="game-btn" id="playGameBtn" style="display: none;">玩太空射击游戏</button>
+                </div>
+                <div class="content">
+                    <div class="post-form" id="postForm" style="display: none;">
+                        <h2>发表新帖</h2>
+                        <textarea id="postContent" placeholder="分享你的想法..."></textarea>
+                        <button id="submitPost">发布</button>
+                    </div>
+                    <div id="postsContainer">
+                        <h2>最新帖子</h2>
+                        <!-- 帖子将通过JavaScript动态添加 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 游戏界面 -->
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        
+        <div id="gameUI">
+            <div id="gameScore">分数: 0</div>
+            <div id="gameLives">生命: 3</div>
+        </div>
+        
+        <div id="gameStartScreen">
+            <h1>太空射击</h1>
+            <p>使用方向键移动飞船，空格键射击</p>
+            <p>躲避陨石并射击它们获得分数</p>
+            <button id="gameStartButton">开始游戏</button>
+        </div>
+        
+        <div id="gameOverScreen">
+            <h1>游戏结束</h1>
+            <p id="finalScore">最终分数: 0</p>
+            <button id="gameRestartButton">再玩一次</button>
+            <button id="backToForumBtn">返回论坛</button>
+        </div>
+    </div>
+
+    <!-- 登录模态框 -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>登录</h2>
+                <button class="close-btn" id="closeLogin">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="loginUsername">用户名</label>
+                <input type="text" id="loginUsername" placeholder="输入用户名">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">密码</label>
+                <input type="password" id="loginPassword" placeholder="输入密码">
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn" id="cancelLogin">取消</button>
+                <button class="submit-btn" id="submitLogin">登录</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>注册新账号</h2>
+                <button class="close-btn" id="closeRegister">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="registerUsername">用户名</label>
+                <input type="text" id="registerUsername" placeholder="输入用户名">
+            </div>
+            <div class="form-group">
+                <label for="registerEmail">电子邮箱</label>
+                <input type="email" id="registerEmail" placeholder="输入电子邮箱">
+            </div>
+            <div class="form-group">
+                <label for="registerPassword">密码</label>
+                <input type="password" id="registerPassword" placeholder="输入密码">
+            </div>
+            <div class="form-group">
+                <label for="registerConfirm">确认密码</label>
+                <input type="password" id="registerConfirm" placeholder="再次输入密码">
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn" id="cancelRegister">取消</button>
+                <button class="submit-btn" id="submitRegister">注册</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟数据库
+        let users = [
+            { id: 1, username: 'admin', email: 'admin@example.com', password: 'admin123', avatar: 'A' },
+            { id: 2, username: 'user1', email: 'user1@example.com', password: 'user1123', avatar: 'U' },
+            { id: 3, username: 'game', email: 'game@example.com', password: '123456', avatar: 'G' }
+        ];
+        
+        let posts = [
+            { id: 1, authorId: 1, author: 'admin', content: '欢迎来到论坛与游戏中心！', date: '2023-05-01 10:00', likes: 5, likedBy: [] },
+            { id: 2, authorId: 2, author: 'user1', content: '这个论坛看起来不错，还有游戏可以玩！', date: '2023-05-02 14:30', likes: 2, likedBy: [] },
+            { id: 3, authorId: 3, author: 'game', content: '试试太空射击游戏吧！登录后点击侧边栏的按钮即可开始游戏。', date: '2023-05-03 09:15', likes: 8, likedBy: [] }
+        ];
+        
+        // 当前登录用户
+        let currentUser = null;
+        
+        // 论坛DOM元素
+        const forumContainer = document.getElementById('forumContainer');
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const postForm = document.getElementById('postForm');
+        const postsContainer = document.getElementById('postsContainer');
+        const postContent = document.getElementById('postContent');
+        const submitPost = document.getElementById('submitPost');
+        const userInfo = document.getElementById('userInfo');
+        const userAvatar = document.getElementById('userAvatar');
+        const usernameDisplay = document.getElementById('usernameDisplay');
+        const playGameBtn = document.getElementById('playGameBtn');
+        
+        // 游戏DOM元素
+        const gameContainer = document.getElementById('gameContainer');
+        const gameCanvas = document.getElementById('gameCanvas');
+        const gameCtx = gameCanvas.getContext('2d');
+        const gameScoreElement = document.getElementById('gameScore');
+        const gameLivesElement = document.getElementById('gameLives');
+        const gameStartScreen = document.getElementById('gameStartScreen');
+        const gameStartButton = document.getElementById('gameStartButton');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const finalScoreElement = document.getElementById('finalScore');
+        const gameRestartButton = document.getElementById('gameRestartButton');
+        const backToForumBtn = document.getElementById('backToForumBtn');
+        
+        // 模态框相关
+        const loginModal = document.getElementById('loginModal');
+        const registerModal = document.getElementById('registerModal');
+        const closeLogin = document.getElementById('closeLogin');
+        const closeRegister = document.getElementById('closeRegister');
+        const cancelLogin = document.getElementById('cancelLogin');
+        const cancelRegister = document.getElementById('cancelRegister');
+        const submitLogin = document.getElementById('submitLogin');
+        const submitRegister = document.getElementById('submitRegister');
+        
+        // 论坛功能
+        function renderPosts() {
+            postsContainer.innerHTML = '<h2>最新帖子</h2>';
+            
+            if (posts.length === 0) {
+                postsContainer.innerHTML += '<p>暂无帖子，快来发表第一个吧！</p>';
+                return;
+            }
+            
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.className = 'post';
+                
+                // 检查当前用户是否已经点赞过这个帖子
+                const isLiked = post.likedBy && post.likedBy.includes(currentUser ? currentUser.id : -1);
+                
+                postElement.innerHTML = `
+                    <div class="post-header">
+                        <div class="post-author">${post.author}</div>
+                        <div class="post-date">${post.date}</div>
+                    </div>
+                    <div class="post-content">${post.content}</div>
+                    <div class="post-actions">
+                        <button class="like-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">
+                            <span class="like-icon">❤</span>
+                            <span class="like-count">${post.likes}</span>
+                        </button>
+                    </div>
+                `;
+                
+                postsContainer.appendChild(postElement);
+            });
+            
+            // 添加点赞事件监听
+            document.querySelectorAll('.like-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (!currentUser) {
+                        alert('请先登录后再点赞！');
+                        return;
+                    }
+                    
+                    const postId = parseInt(this.getAttribute('data-post-id'));
+                    const post = posts.find(p => p.id === postId);
+                    
+                    if (!post.likedBy) {
+                        post.likedBy = [];
+                    }
+                    
+                    const userIndex = post.likedBy.indexOf(currentUser.id);
+                    
+                    if (userIndex === -1) {
+                        // 未点赞，添加点赞
+                        post.likedBy.push(currentUser.id);
+                        post.likes++;
+                        this.classList.add('liked');
+                    } else {
+                        // 已点赞，取消点赞
+                        post.likedBy.splice(userIndex, 1);
+                        post.likes--;
+                        this.classList.remove('liked');
+                    }
+                    
+                    // 更新点赞数显示
+                    this.querySelector('.like-count').textContent = post.likes;
+                });
+            });
+        }
+        
+        function initForum() {
+            renderPosts();
+            updateAuthUI();
+        }
+        
+        function updateAuthUI() {
+            if (currentUser) {
+                loginBtn.style.display = 'none';
+                registerBtn.style.display = 'none';
+                logoutBtn.style.display = 'inline-block';
+                postForm.style.display = 'block';
+                userInfo.style.display = 'flex';
+                playGameBtn.style.display = 'block';
+                userAvatar.textContent = currentUser.avatar || currentUser.username.charAt(0).toUpperCase();
+                usernameDisplay.textContent = currentUser.username;
+            } else {
+                loginBtn.style.display = 'inline-block';
+                registerBtn.style.display = 'inline-block';
+                logoutBtn.style.display = 'none';
+                postForm.style.display = 'none';
+                userInfo.style.display = 'none';
+                playGameBtn.style.display = 'none';
+            }
+        }
+        
+        // 游戏变量
+        let gameScore = 0;
+        let gameLives = 3;
+        let gameRunning = false;
+        let gameAnimationId;
+        
+        // 玩家飞船
+        const player = {
+            x: gameCanvas.width / 2,
+            y: gameCanvas.height - 60,
+            width: 50,
+            height: 50,
+            speed: 5,
+            color: '#3498db',
+            isMovingLeft: false,
+            isMovingRight: false,
+            isMovingUp: false,
+            isMovingDown: false
+        };
+        
+        // 子弹数组
+        let bullets = [];
+        const bulletSpeed = 7;
+        const bulletSize = 5;
+        
+        // 陨石数组
+        let asteroids = [];
+        const asteroidMaxSize = 40;
+        const asteroidMinSize = 20;
+        const asteroidSpeed = 2;
+        let asteroidSpawnRate = 60; // 帧数
+        
+        // 爆炸效果数组
+        let explosions = [];
+        
+        // 键盘控制
+        const keys = {
+            ArrowLeft: false,
+            ArrowRight: false,
+            ArrowUp: false,
+            ArrowDown: false,
+            ' ': false
+        };
+        
+        // 游戏功能
+        function startGame() {
+            // 重置游戏状态
+            gameScore = 0;
+            gameLives = 3;
+            bullets = [];
+            asteroids = [];
+            explosions = [];
+            
+            gameScoreElement.textContent = `分数: ${gameScore}`;
+            gameLivesElement.textContent = `生命: ${gameLives}`;
+            
+            gameStartScreen.style.display = 'none';
+            gameOverScreen.style.display = 'none';
+            gameRunning = true;
+            
+            gameLoop();
+        }
+        
+        function gameOver() {
+            gameRunning = false;
+            cancelAnimationFrame(gameAnimationId);
+            finalScoreElement.textContent = `最终分数: ${gameScore}`;
+            gameOverScreen.style.display = 'block';
+        }
+        
+        function gameLoop() {
+            if (!gameRunning) return;
+            
+            updateGame();
+            renderGame();
+            
+            gameAnimationId = requestAnimationFrame(gameLoop);
+        }
+        
+        function updateGame() {
+            // 更新玩家位置
+            if (player.isMovingLeft && player.x > 0) {
+                player.x -= player.speed;
+            }
+            if (player.isMovingRight && player.x < gameCanvas.width - player.width) {
+                player.x += player.speed;
+            }
+            if (player.isMovingUp && player.y > 0) {
+                player.y -= player.speed;
+            }
+            if (player.isMovingDown && player.y < gameCanvas.height - player.height) {
+                player.y += player.speed;
+            }
+            
+            // 发射子弹
+            if (keys[' ']) {
+                if (gameRunning && (!bullets.length || bullets[bullets.length - 1].y < player.y - 20)) {
+                    bullets.push({
+                        x: player.x + player.width / 2 - bulletSize / 2,
+                        y: player.y,
+                        width: bulletSize,
+                        height: bulletSize * 2,
+                        speed: bulletSpeed,
+                        color: '#f1c40f'
+                    });
+                }
+                keys[' '] = false; // 防止连续发射
+            }
+            
+            // 更新子弹位置
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                bullets[i].y -= bullets[i].speed;
+                
+                // 移除超出屏幕的子弹
+                if (bullets[i].y < 0) {
+                    bullets.splice(i, 1);
+                }
+            }
+            
+            // 生成陨石
+            if (Math.random() * asteroidSpawnRate < 1) {
+                const size = Math.random() * (asteroidMaxSize - asteroidMinSize) + asteroidMinSize;
+                asteroids.push({
+                    x: Math.random() * (gameCanvas.width - size),
+                    y: -size,
+                    width: size,
+                    height: size,
+                    speed: Math.random() * asteroidSpeed + 1,
+                    color: '#95a5a6'
+                });
+                
+                // 随着分数增加，增加陨石生成率
+                asteroidSpawnRate = Math.max(20, 60 - Math.floor(gameScore / 100));
+            }
+            
+            // 更新陨石位置
+            for (let i = asteroids.length - 1; i >= 0; i--) {
+                asteroids[i].y += asteroids[i].speed;
+                
+                // 检查陨石是否超出屏幕
+                if (asteroids[i].y > gameCanvas.height) {
+                    asteroids.splice(i, 1);
+                }
+            }
+            
+            // 检测子弹和陨石碰撞
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                for (let j = asteroids.length - 1; j >= 0; j--) {
+                    if (checkCollision(bullets[i], asteroids[j])) {
+                        // 创建爆炸效果
+                        explosions.push({
+                            x: asteroids[j].x + asteroids[j].width / 2,
+                            y: asteroids[j].y + asteroids[j].height / 2,
+                            radius: asteroids[j].width / 2,
+                            alpha: 1,
+                            color: '#e74c3c'
+                        });
+                        
+                        // 移除子弹和陨石
+                        bullets.splice(i, 1);
+                        asteroids.splice(j, 1);
+                        
+                        // 增加分数
+                        gameScore += 10;
+                        gameScoreElement.textContent = `分数: ${gameScore}`;
+                        
+                        break;
+                    }
+                }
+            }
+            
+            // 检测玩家和陨石碰撞
+            for (let i = asteroids.length - 1; i >= 0; i--) {
+                if (checkCollision(player, asteroids[i])) {
+                    // 创建爆炸效果
+                    explosions.push({
+                        x: player.x + player.width / 2,
+                        y: player.y + player.height / 2,
+                        radius: player.width / 2,
+                        alpha: 1,
+                        color: '#3498db'
+                    });
+                    
+                    // 移除陨石
+                    asteroids.splice(i, 1);
+                    
+                    // 减少生命
+                    gameLives--;
+                    gameLivesElement.textContent = `生命: ${gameLives}`;
+                    
+                    if (gameLives <= 0) {
+                        gameOver();
+                        return;
+                    }
+                }
+            }
+            
+            // 更新爆炸效果
+            for (let i = explosions.length - 1; i >= 0; i--) {
+                explosions[i].radius += 1;
+                explosions[i].alpha -= 0.02;
+                
+                if (explosions[i].alpha <= 0) {
+                    explosions.splice(i, 1);
+                }
+            }
+        }
+        
+        function renderGame() {
+            // 清空画布
+            gameCtx.fillStyle = '#111';
+            gameCtx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+            
+            // 绘制星星背景
+            drawStars();
+            
+            // 绘制玩家
+            gameCtx.fillStyle = player.color;
+            gameCtx.beginPath();
+            gameCtx.moveTo(player.x + player.width / 2, player.y);
+            gameCtx.lineTo(player.x + player.width, player.y + player.height);
+            gameCtx.lineTo(player.x, player.y + player.height);
+            gameCtx.closePath();
+            gameCtx.fill();
+            
+            // 绘制子弹
+            bullets.forEach(bullet => {
+                gameCtx.fillStyle = bullet.color;
+                gameCtx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+            });
+            
+            // 绘制陨石
+            asteroids.forEach(asteroid => {
+                gameCtx.fillStyle = asteroid.color;
+                gameCtx.beginPath();
+                gameCtx.arc(
+                    asteroid.x + asteroid.width / 2,
+                    asteroid.y + asteroid.height / 2,
+                    asteroid.width / 2,
+                    0,
+                    Math.PI * 2
+                );
+                gameCtx.fill();
+            });
+            
+            // 绘制爆炸效果
+            explosions.forEach(explosion => {
+                gameCtx.save();
+                gameCtx.globalAlpha = explosion.alpha;
+                gameCtx.fillStyle = explosion.color;
+                gameCtx.beginPath();
+                gameCtx.arc(explosion.x, explosion.y, explosion.radius, 0, Math.PI * 2);
+                gameCtx.fill();
+                gameCtx.restore();
+            });
+        }
+        
+        function drawStars() {
+            gameCtx.fillStyle = 'white';
+            for (let i = 0; i < 100; i++) {
+                const x = Math.random() * gameCanvas.width;
+                const y = Math.random() * gameCanvas.height;
+                const size = Math.random() * 2;
+                gameCtx.fillRect(x, y, size, size);
+            }
+        }
+        
+        function checkCollision(obj1, obj2) {
+            // 圆形碰撞检测（用于陨石）
+            if (obj1.hasOwnProperty('radius') || obj2.hasOwnProperty('radius')) {
+                const circle = obj1.hasOwnProperty('radius') ? obj1 : obj2;
+                const rect = obj1.hasOwnProperty('radius') ? obj2 : obj1;
+                
+                const distX = Math.abs(circle.x - (rect.x + rect.width / 2));
+                const distY = Math.abs(circle.y - (rect.y + rect.height / 2));
+                
+                if (distX > (rect.width / 2 + circle.radius)) return false;
+                if (distY > (rect.height / 2 + circle.radius)) return false;
+                
+                if (distX <= (rect.width / 2)) return true;
+                if (distY <= (rect.height / 2)) return true;
+                
+                const dx = distX - rect.width / 2;
+                const dy = distY - rect.height / 2;
+                return (dx * dx + dy * dy <= (circle.radius * circle.radius));
+            }
+            
+            // 矩形碰撞检测
+            return (
+                obj1.x < obj2.x + obj2.width &&
+                obj1.x + obj1.width > obj2.x &&
+                obj1.y < obj2.y + obj2.height &&
+                obj1.y + obj1.height > obj2.y
+            );
+        }
+        
+        // 事件监听
+        loginBtn.addEventListener('click', () => {
+            loginModal.style.display = 'flex';
+        });
+        
+        registerBtn.addEventListener('click', () => {
+            registerModal.style.display = 'flex';
+        });
+        
+        logoutBtn.addEventListener('click', () => {
+            currentUser = null;
+            updateAuthUI();
+            renderPosts();
+            alert('已退出登录');
+        });
+        
+        closeLogin.addEventListener('click', () => {
+            loginModal.style.display = 'none';
+        });
+        
+        closeRegister.addEventListener('click', () => {
+            registerModal.style.display = 'none';
+        });
+        
+        cancelLogin.addEventListener('click', () => {
+            loginModal.style.display = 'none';
+        });
+        
+        cancelRegister.addEventListener('click', () => {
+            registerModal.style.display = 'none';
+        });
+        
+        submitLogin.addEventListener('click', () => {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!username || !password) {
+                alert('请输入用户名和密码');
+                return;
+            }
+            
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                currentUser = { ...user };
+                loginModal.style.display = 'none';
+                updateAuthUI();
+                renderPosts();
+                alert('登录成功！');
+            } else {
+                alert('用户名或密码错误');
+            }
+        });
+        
+        submitRegister.addEventListener('click', () => {
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirm = document.getElementById('registerConfirm').value;
+            
+            if (!username || !email || !password || !confirm) {
+                alert('请填写所有字段');
+                return;
+            }
+            
+            if (password !== confirm) {
+                alert('两次输入的密码不一致');
+                return;
+            }
+            
+            if (users.some(u => u.username === username)) {
+                alert('用户名已存在');
+                return;
+            }
+            
+            if (users.some(u => u.email === email)) {
+                alert('电子邮箱已被注册');
+                return;
+            }
+            
+            const newUser = {
+                id: users.length + 1,
+                username,
+                email,
+                password,
+                avatar: username.charAt(0).toUpperCase()
+            };
+            
+            users.push(newUser);
+            registerModal.style.display = 'none';
+            alert('注册成功！请登录');
+        });
+        
+        submitPost.addEventListener('click', () => {
+            const content = postContent.value.trim();
+            
+            if (!content) {
+                alert('帖子内容不能为空');
+                return;
+            }
+            
+            const newPost = {
+                id: posts.length + 1,
+                authorId: currentUser.id,
+                author: currentUser.username,
+                content,
+                date: new Date().toLocaleString(),
+                likes: 0,
+                likedBy: []
+            };
+            
+            posts.unshift(newPost);
+            postContent.value = '';
+            renderPosts();
+        });
+        
+        playGameBtn.addEventListener('click', () => {
+            forumContainer.style.display = 'none';
+            gameContainer.style.display = 'block';
+            
+            // 重置玩家位置
+            player.x = gameCanvas.width / 2;
+            player.y = gameCanvas.height - 60;
+            
+            // 显示游戏开始界面
+            gameStartScreen.style.display = 'block';
+            gameOverScreen.style.display = 'none';
+        });
+        
+        backToForumBtn.addEventListener('click', () => {
+            gameContainer.style.display = 'none';
+            forumContainer.style.display = 'block';
+            
+            // 停止游戏循环
+            if (gameRunning) {
+                cancelAnimationFrame(gameAnimationId);
+                gameRunning = false;
+            }
+        });
+        
+        gameStartButton.addEventListener('click', () => {
+            gameStartScreen.style.display = 'none';
+            startGame();
+        });
+        
+        gameRestartButton.addEventListener('click', () => {
+            gameOverScreen.style.display = 'none';
+            startGame();
+        });
+        
+        // 键盘控制
+        window.addEventListener('keydown', (e) => {
+            if (keys.hasOwnProperty(e.key)) {
+                keys[e.key] = true;
+                e.preventDefault();
+            }
+            
+            // 更新玩家移动状态
+            player.isMovingLeft = keys.ArrowLeft;
+            player.isMovingRight = keys.ArrowRight;
+            player.isMovingUp = keys.ArrowUp;
+            player.isMovingDown = keys.ArrowDown;
+        });
+        
+        window.addEventListener('keyup', (e) => {
+            if (keys.hasOwnProperty(e.key)) {
+                keys[e.key] = false;
+                e.preventDefault();
+            }
+            
+            // 更新玩家移动状态
+            player.isMovingLeft = keys.ArrowLeft;
+            player.isMovingRight = keys.ArrowRight;
+            player.isMovingUp = keys.ArrowUp;
+            player.isMovingDown = keys.ArrowDown;
+        });
+        
+        // 初始化论坛
+        initForum();
+    </script>
+</body>
+</html>
