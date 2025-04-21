@@ -1,0 +1,41 @@
+import random
+
+def generate_daily_message():
+    
+    class8 = [
+        "Ok，have a rest -- by石总",
+        "我年轻的时候可比你们妈妈好看！ -- by汪总",
+        "哈哈",
+        "今日事今日毕",
+        "细节决定成败"
+    ]
+    
+    every_day_motto = [
+        "生活就像海洋，只有意志坚强的人才能到达彼岸",
+        "天才是百分之一的灵感加上百分之九十九的汗水",
+        "读万卷书，行万里路",
+        "不积跬步，无以至千里",
+        "三人行，必有我师焉"
+    ]
+    
+    songs = [
+        "《阳光总在风雨后》",
+        "《明天会更好》",
+        "《追梦赤子心》",
+        "《夜空中最亮的星》",
+        "《少年》"
+    ]
+    
+    # 从每个列表中随机选择一个项目
+    class8_quote = random.choice(class8)
+    motto = random.choice(every_day_motto)
+    song = random.choice(songs)
+    
+
+    message = f"""八班每日金句: {class8_quote}
+每日名言: {motto}
+今日歌单: {song}"""
+    
+    return message
+
+print(generate_daily_message())
